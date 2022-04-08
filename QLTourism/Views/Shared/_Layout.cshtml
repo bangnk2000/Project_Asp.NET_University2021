@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Panagea - Premium site template for travel agencies, hotels and restaurant listing.">
+    <meta name="author" content="Ansonika">
+    <title>@ViewBag.Title</title>
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="~/Assets/img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="~/Assets/img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="~/Assets/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="~/Assets/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="~/Assets/img/apple-touch-icon-114x114-precomposed.png">
+
+    <!-- BASE CSS -->
+    <link href="~/Assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Assets/css/style.css" rel="stylesheet">
+    <link href="~/Assets/css/vendors.css" rel="stylesheet">
+
+    <!-- SPECIFIC CSS -->
+    <link href="~/Assets/layerslider/css/layerslider.css" rel="stylesheet">
+
+    <!-- YOUR CUSTOM CSS -->
+    <link href="~/Assets/css/custom.css" rel="stylesheet">
+</head>
+<body>
+    <div id="page">
+
+        <header class="header menu_fixed">
+            <div id="preloader"><div data-loader="circle-side"></div></div><!-- Page Preload -->
+            <div id="logo">
+                <a href="/Home">
+                    <img src="~/Assets/img/logo.png" width="150" height="36" data-retina="true" alt="" class="logo_normal">
+                    <img src="~/Assets/img/logo_sticky.png" width="150" height="36" data-retina="true" alt="" class="logo_sticky">
+                </a>
+            </div>
+            <ul id="top_menu">
+                <li><a href="/cart/index/" class="cart-menu-btn" title="Cart"><strong id="cartCount">@{
+                    int size = 0;
+                    if(Session["CartItem"]!=null){
+                        size = Session["CartItem"].ToString().Split('&').Count();
+                   }
+                    @size                                                              }</strong></a></li>
+                @if (Session["ClientidUser"] == null)
+                {
+                    <li><a href="#sign-in-dialog" id="sign-in" class="login" title="Sign In">Đăng nhập</a></li>
+                }
+                @*<li><a href="wishlist.html" class="wishlist_bt_top" title="Your wishlist">Your wishlist</a></li>*@
+                @if (Session["ClientidUser"] != null)
+                {
+                    <div class="dropdown d-inline-block">
+                        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="avatar" style="height: 25px !important; width: 25px !important; border-radius: 30px !important; max-width: 100% !important; overflow: hidden; display: inline-block; vertical-align: middle; ">
+
+                                @if (Session["ClientAvatar"] != null)
+                                {
+                                    var avatarPath = "~/Assets/img/images/" + @Session["ClientAvatar"];
+                                    <img class="rounded-circle header-profile-user" src="@Url.Content(avatarPath)"
+                                         alt="Header Avatar" style="height: 25px !important; width: 25px !important;">
+                                }
+                                else
+                                {
+                                    <img class="rounded-circle header-profile-user" src="~/Assets/img/images/avatar.jpg"
+                                        alt="Header Avatar" style="height: 25px !important; width: 25px !important;">
+                                }
+                            </div>
+                            <span class="d-none d-xl-inline-block ml-1">@Session["ClientUsername"]</span>
+                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <!-- item-->
+                            <a class="dropdown-item" href="@Url.Action("Profile", "ClientLogin", new { id = @Session["ClientidUser"]})"><i class="dripicons-user d-inlne-block text-muted mr-2"></i> Thông tin</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/userbooking/index"><i class="dripicons-user d-inlne-block text-muted mr-2"></i> Lịch sử đặt tour</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="@Url.Action("Logout","ClientLogin", new { returnUrl = Request.RawUrl })"><i class="dripicons-exit d-inlne-block text-muted mr-2"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                }
+            </ul>
+            <!-- top_menu -->
+            <a href="#menu" class="btn_mobile">
+                <div class="hamburger hamburger--spin" id="hamburger">
+                    <div class="hamburger-box">
+                        <div class="hamburger-inner"></div>
+                    </div>
+                </div>
+            </a>
+            <nav id="menu" class="main-menu">
+                <ul>
+                    <li>
+                        <span><a href="/Home">Trang chủ</a></span>
+                    </li>
+                    @{ Html.RenderAction("TourMenu", "Home");}
+                    <li>
+                        <span><a href="@Url.Action("Index", "NewsView")">Tin tức</a></span>
+                    </li>
+                    <li>
+                        <span><a href="@Url.Action("Index", "About")">Liên hệ</a></span>
+                    </li>
+                    @if (Session["ClientidUser"] == null)
+                    {
+                        <li>
+                            <span><a href="@Url.Action("LoginPage","ClientLogin")">Đăng nhập</a></span>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </header>
+        <!-- header -->
+
+        <main>
+            @RenderBody()
+        </main>
+        <!-- main -->
+
+        <footer id="footer">
+            <div class="container margin_60_35">
+                <div class="row">
+                    <div class="col-lg-5 col-md-12 p-r-5">
+                        <p><img src="~/Assets/img/logo.png" width="150" height="36" data-retina="true" alt=""></p>
+                        <p></p>
+                        <div class="follow_us">
+                            <ul>
+                                <li>Chúng tôi trên mạng</li>
+                                <li><a href="#0"><i class="ti-facebook"></i></a></li>
+                                <li><a href="#0"><i class="ti-twitter-alt"></i></a></li>
+                                <li><a href="#0"><i class="ti-google"></i></a></li>
+                                <li><a href="#0"><i class="ti-pinterest"></i></a></li>
+                                <li><a href="#0"><i class="ti-instagram"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 ml-lg-auto">
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h5>Liên hệ</h5>
+                        <ul class="contacts">
+                            <li><a href="tel://61280932400"><i class="ti-mobile"></i> + 84349 413 319</a></li>
+                            <li><a href="mailto:info@Panagea.com"><i class="ti-email"></i> hanairoha2k@gmail.com</a></li>
+                        </ul>
+                        <div id="newsletter">
+                            <h6>Gửi thư</h6>
+                            <div id="message-newsletter"></div>
+                            <form method="post" action="assets/newsletter.php" name="newsletter_form" id="newsletter_form">
+                                <div class="form-group">
+                                    <input type="email" name="email_newsletter" id="email_newsletter" class="form-control" placeholder="Email của bạn...">
+                                    <input type="submit" value="Submit" id="submit-newsletter">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--row-->
+                <hr>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul id="footer-selector">
+                            <li>
+                                <div class="styled-select" id="lang-selector">
+                                    <select>
+                                        <option value="English" selected>Tiếng việt</option>
+                                        <option value="English">English</option>
+                                        <option value="French">French</option>
+                                        <option value="Spanish">Spanish</option>
+                                        <option value="Russian">Russian</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="styled-select" id="currency-selector">
+                                    <select>
+                                        <option value="VND" selected>VNĐ</option>
+                                        <option value="US Dollars" >US Dollars</option>
+                                        <option value="Euro">Euro</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li><img src="img/cards_all.svg" alt=""></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul id="additional_links">
+                            <li><a href="#0">Quy định</a></li>
+                            <li><a href="#0">Riêng tư</a></li>
+                            <li><span>© 2021 Okayu</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!--footer-->
+    </div>
+    <!-- page -->
+    <!-- Sign In Popup -->
+    @{ Html.RenderAction("login", "ClientLogin");}
+    <!-- Sign In Popup -->
+
+
+    <div id="toTop"></div><!-- Back to top button -->
+    <!-- COMMON SCRIPTS -->
+    <script src="~/Assets/js/jquery-2.2.4.min.js"></script>
+    <script src="~/Assets/js/common_scripts.js"></script>
+    <script src="~/Assets/js/main.js"></script>
+    <script src="~/Assets/assets/validate.js"></script>
+    <!-- SPECIFIC SCRIPTS -->
+    <script src="~/Assets/layerslider/js/greensock.js"></script>
+    <script src="~/Assets/layerslider/js/layerslider.transitions.js"></script>
+    <script src="~/Assets/layerslider/js/layerslider.kreaturamedia.jquery.js"></script>
+    <script>
+        'use strict';
+        $('#layerslider').layerSlider({
+            autoStart: true,
+            navButtons: false,
+            navStartStop: false,
+            showCircleTimer: false,
+            responsive: true,
+            responsiveUnder: 1280,
+            layersContainer: 1200,
+            skinsPath: 'Assets/layerslider/skins/'
+            // Please make sure that you didn't forget to add a comma to the line endings
+            // except the last line!
+        });
+    </script>
+</body>
+</html>

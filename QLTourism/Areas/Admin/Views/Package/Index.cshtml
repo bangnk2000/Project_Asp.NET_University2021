@@ -1,0 +1,142 @@
+﻿@model PagedList.IPagedList<QLTourism.Models.Package>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Quản lý tour</h2>
+
+<p>
+    @Html.ActionLink("Tạo mới", "Create", "Package", null, new { @class="btn btn-primary" })
+</p>
+<div class="table-settings mb-4">
+    <div class="row align-items-center justify-content-between">
+        <div class="col col-md-6 col-lg-3 col-xl-4">
+            <form>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                    <input type="text" class="form-control" name="searchString" value="@ViewBag.searchString" id="exampleInputIconLeft" placeholder="Tên sản phẩm" aria-label="Search" aria-describedby="basic-addon2" />
+                    <select id="dmFilter" name="dmFilter">
+                        <option value="0">Chọn danh mục</option>
+                        @foreach (var item in @ViewBag.DropDown)
+                        {
+                    <option value="@item.id">@item.name</option>
+                        }
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<table class="table">
+    <tr>
+        <th>
+            Tên danh mục
+        </th>
+        <th>
+            Tên tour
+        </th>
+        <th>
+            Hình thu nhỏ
+        </th>
+        <th>
+            Ngày khởi hành
+        </th>
+        <th>
+            Thời gian
+        </th>
+        <th>
+            Điểm xuất phát
+        </th>
+        <th>
+            Điểm kết thúc
+        </th>
+        <th>
+            Điều khoản
+        </th>
+        <th>
+            Phương tiện
+        </th>
+        <th>
+            Giá cơ bản
+        </th>
+        <th>
+            Điều kiện
+        </th>
+        <th>
+            Chỗ
+        </th>
+        <th>
+            Trạng thái
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Category.name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgName)
+    </td>
+    <td>
+        @if (item.thumbail != null)
+        {
+            string ImagePathz = "~/Areas/Admin/wwwroot/thumbail/" + item.thumbail;
+            <img src="@Url.Content(ImagePathz)" width="100" class="img-thumbnail" />
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgStartDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgTimePeriod)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgStartPlace)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgEndPlace)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgRules)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgTransporter)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgBasePrice)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgCondition)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.pkgSlot)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.active)
+    </td>
+    <td>
+        @Html.ActionLink("Lịch trình", "Programs", new { id = item.id }) |
+        @Html.ActionLink("Ảnh và video", "Media", new { id = item.id }) |
+        @Html.ActionLink("Gói combos", "Prices", new { id = item.id }) <br />
+        @Html.ActionLink("Sửa", "Edit", new { id = item.id }) |
+        @Html.ActionLink("Chi tiết", "Details", new { id = item.id }) |
+        @Html.ActionLink("Xoá", "Delete", new { id = item.id })
+    </td>
+</tr>}
+    <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mb-0">
+                @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+                <span>-</span>
+                @Html.PagedListPager(Model, page => Url.Action("Index",
+                         new { page, pageSize = Model.PageSize, searchString = ViewBag.searchString }))
+            </ul>
+        </nav>
+    </div>
+</table>

@@ -1,0 +1,274 @@
+﻿@model IEnumerable<QLTourism.Models.Package>
+@{
+    ViewBag.Title = "Du lịch Okayu - Trang chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int indexNewTourCount = 0;
+}
+
+<!-- Slider -->
+<div id="full-slider-wrapper">
+    <div id="layerslider" style="width:100%;height:750px;">
+        @{ Html.RenderAction("HomeSlider", "Home");}
+    </div>
+</div>
+<!-- End layerslider -->
+
+<div class="container-fluid margin_80_0">
+    <div class="main_title_2">
+        <span><em></em></span>
+        <h2>Tour phổ biến</h2>
+        <p>Được lựa chọn nhiều nhất trong thời gian gần đây.</p>
+    </div>
+    <div id="reccomended" class="owl-carousel owl-theme">
+        @foreach (var item in Model)
+        {
+            if (item.active == 4)
+            {
+        <div class="item">
+            <div class="box_grid">
+                <figure>
+                    <a href="/Tour/Details/@item.id" class="wish_bt"></a>
+                    @if (item.thumbail != null)
+                    {
+                        string ImagePath = "~/Areas/Admin/wwwroot/thumbail/" + item.thumbail;
+                        <a href="/Tour/Details/@item.id"><img src="@Url.Content(ImagePath)" class="img-fluid" alt="" width="800" height="533"><div class="read_more"><span>Chi tiết</span></div></a>
+                    }
+                    else
+                    {
+                        string ImagePath = "~/Areas/Admin/wwwroot/thumbail/tourThumbail.jpg";
+                        <a href="/Tour/Details/@item.id"><img src="@Url.Content(ImagePath)" class="img-fluid" alt="" width="800" height="533"><div class="read_more"><span>Chi tiết</span></div></a>
+                    }
+                    <small>@item.Category.name</small>
+                </figure>
+                <div class="wrapper">
+                    <h3><a href="/Tour/Details/@item.id">@item.pkgName</a></h3>
+                    @if (item.pkgDesc != null)
+                    {
+                        <p>@item.pkgDesc.Split('>', '<')[2]</p>
+                    }
+                    else
+                    {
+                        <p>Chưa có mô tả</p>
+                    }
+                    @if (item.pkgBasePrice == 0)
+                    {
+                        <span class="price"><strong>Giá liên hệ</strong></span>
+                    }
+                    else
+                    {
+                        <span class="price">Giá từ <strong>@String.Format("{0:n0}", item.pkgBasePrice) VNĐ</strong></span>
+                    }
+                </div>
+                <ul>
+                    <li><i class="icon_clock_alt"></i> @item.pkgTimePeriod </li>
+                    <li><div class="score"><span>Ngày khởi hành: @{string a = item.pkgStartDate.ToString().Split(' ')[0]; @a}<em>Phương tiện: @item.pkgTransporter</em></span><a href="/Tour/Details/@item.id"><strong>Giữ chỗ</strong></a></div></li>
+                </ul>
+            </div>
+        </div>
+            }
+        }
+    </div>
+    <!-- /carousel -->
+    <div class="container">
+        <p class="btn_home_align"><a href="/Tour/ListTour" class="btn_1 rounded">Xem tất cả</a></p>
+    </div>
+    <!-- /container -->
+    <hr class="large">
+</div>
+<!-- /container -->
+
+<div class="container-fluid margin_30_95 pl-lg-5 pr-lg-5">
+    <section class="add_bottom_45">
+        <div class="main_title_3">
+            <span><em></em></span>
+            <h2>Những tour mới cập nhật</h2>
+            <p>Những địa điểm hot theo xu hướng hiện tại.</p>
+        </div>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                if (indexNewTourCount < 4)
+                {
+                    <div class="col-xl-3 col-lg-6 col-md-6">
+                        <a href="/Tour/Details/@item.id" class="grid_item">
+                            <figure>
+                                <small>@item.Category.name</small>
+                                <div class="score">
+                                    @if (item.pkgBasePrice == 0)
+                                    {
+                                        <strong>Giá liên hệ</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong>Giá từ @String.Format("{0:n0}", item.pkgBasePrice) VNĐ</strong>
+                                    }
+                                </div>
+                                @if (item.thumbail != null)
+                                {
+                                    string ImagePath = "~/Areas/Admin/wwwroot/thumbail/" + item.thumbail;
+                                    <img src="@Url.Content(ImagePath)" class="img-fluid" alt="" style="width:400px;height:267px;object-fit:cover;">
+                                }
+                                else
+                                {
+                                    string ImagePath = "~/Areas/Admin/wwwroot/thumbail/tourThumbail.jpg";
+                                    <img src="@Url.Content(ImagePath)" class="img-fluid" alt="" style="width:400px;height:267px;object-fit:cover;">
+                                }
+                                <div class="info">
+                                    <div class="cat_star" style="font-size:12px !important;">Ngày khởi hành: @{string a = item.pkgStartDate.ToString().Split(' ')[0]; @a}</div>
+                                    <h3>@item.pkgName</h3>
+                                </div>
+                            </figure>
+                        </a>
+                    </div>
+                    <!-- /grid_item -->
+                }
+                indexNewTourCount++;
+            }
+        </div>
+        <!-- /row -->
+        <a href="/Tour/ListTour"><strong>Xem tất cả (@ViewBag.TongTour) <i class="arrow_carrot-right"></i></strong></a>
+    </section>
+    <!-- /section -->
+
+    @foreach (var item in ViewBag.DropDown)
+    {
+        if (item.parentId == 0)
+        {
+            int itemCountz = 0;
+            <section>
+                <div class="main_title_3">
+                    <span><em></em></span>
+                    <h2>@item.name</h2>
+                    <p>Không ngừng trải nghiệm những điều mới lạ.</p>
+                </div>
+                <div class="row">
+                    @foreach (var itemz in ViewBag.DropDown)
+                    {
+                        if (itemz.parentId == item.id)
+                        {
+
+                            foreach (var itemzz in ViewBag.DropDown)
+                            {
+                                if (itemzz.parentId == itemz.id)
+                                {
+                                    foreach (var tourItem in Model)
+                                    {
+                                        if (tourItem.categoryId == itemzz.id)
+                                        {
+                                            <div class="col-xl-3 col-lg-6 col-md-6">
+                                                <a href="/Tour/Details/@tourItem.id" class="grid_item">
+                                                    <figure>
+                                                        <small>@tourItem.Category.name</small>
+                                                        <div class="score">
+                                                            <strong>
+                                                                @if (tourItem.pkgBasePrice == 0)
+                                                                {
+                                                                    <strong>Giá liên hệ</strong>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <strong>Giá từ @String.Format("{0:n0}", tourItem.pkgBasePrice) VNĐ</strong>
+                                                                }
+                                                            </strong>
+                                                        </div>
+                                                        @if (tourItem.thumbail != null)
+                                                        {
+                                                            string ImagePath = "~/Areas/Admin/wwwroot/thumbail/" + tourItem.thumbail;
+                                                            <img src="@Url.Content(ImagePath)" class="img-fluid" alt="" style="width:400px;height:267px;object-fit:cover;">
+                                                        }
+                                                        else
+                                                        {
+                                                            string ImagePath = "~/Areas/Admin/wwwroot/thumbail/tourThumbail.jpg";
+                                                            <img src="@Url.Content(ImagePath)" class="img-fluid" alt="" style="width:400px;height:267px;object-fit:cover;">
+                                                        }
+                                                        <div class="info">
+                                                            <h3>@tourItem.pkgName</h3>
+                                                        </div>
+                                                    </figure>
+                                                </a>
+                                            </div>
+                                            itemCountz++;
+                                        }
+                                        if(itemCountz >= 8)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (itemCountz >= 8)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        if (itemCountz >= 8)
+                        {
+                            break;
+                        }
+                    }
+                    <!-- /grid_item -->
+                </div>
+                <!-- /row -->
+                <a href="/Tour/ListTour?searchString=&madm=@item.id"><strong>Xem tất cả <i class="arrow_carrot-right"></i></strong></a>
+            </section>
+        }
+    }
+</div>
+<!-- /container -->
+
+<div class="bg_color_1">
+    <div class="container margin_80_55">
+        <div class="main_title_2">
+            <span><em></em></span>
+            <h3>Tin tức và sự kiện</h3>
+            <p>Cập nhập hằng ngày để giúp bạn không bỏ sót gì</p>
+        </div>
+        <div class="row">
+            <!-- /box_news -->
+            @{
+                int newIndex = 0;
+                foreach (var item in ViewBag.News)
+                {
+                    string ImagePath = "~/Areas/Admin/wwwroot/thumbail/" + item.thumbail;
+                    <div class="col-lg-6">
+                        <a class="box_news" href="/NewsView/ArticleDetail/@item.id">
+                            <figure>
+                                <img src="@Url.Content(ImagePath)" alt="">
+                            </figure>
+                            <ul>
+                                <li>@{string a = item.date.ToString().Split(' ')[0]; @a}</li>
+                            </ul>
+                            <h4>@item.title</h4>
+                            <p>@item.summary ...</p>
+                        </a>
+                    </div>
+                    newIndex++;
+                    if (newIndex >= 4)
+                    {
+                        break;
+                    }
+                }
+            }
+        </div>
+        <!-- /row -->
+        <p class="btn_home_align"><a href="/NewsView/index" class="btn_1 rounded">Xem thêm tin tức</a></p>
+    </div>
+    <!-- /container -->
+</div>
+<!-- /bg_color_1 -->
+
+<div class="call_section">
+    <div class="container clearfix">
+        <div class="col-lg-5 col-md-6 float-right wow" data-wow-offset="250">
+            <div class="block-reveal">
+                <div class="block-vertical"></div>
+                <div class="box_1">
+                    <h3>Tham gia với chúng tôi</h3>
+                    <p>Tham gia chúng tôi đồng nghĩa bạn sẽ tham gia cộng đồng thích du lịch lớn nhất Việt Nam. Hãy cùng nhau trải nghiệm, tận hưởng niềm vui khi đi du lịch nhé!</p>
+                    <a href="/About/Index/" class="btn_1 rounded">Về chúng tôi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/call_section-->
